@@ -1,0 +1,21 @@
+name: FishingAdventure
+version: '1.0-SNAPSHOT'
+main: org.osj.fishingAdventure.FishingAdventure
+api-version: '1.21'
+
+
+commands: 
+  purchasechunkaccept:
+    description: 청크 구매 수락
+  purchasechunkreject:
+    description: 청크 구매 취소
+  removechunkaccept:
+    description: 청크 제거 수락
+  removechunkreject:
+    description: 청크 제거 취소
+  addallowchunk:
+    aliases: 청크허가
+    description: 청크 상호작용 허용
+  removeallowchunk:
+    aliases: 청크불허
+    description: 청크 상호작용 불허
