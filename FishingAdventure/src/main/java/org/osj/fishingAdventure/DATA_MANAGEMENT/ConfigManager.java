@@ -18,6 +18,12 @@ public class ConfigManager
     {
         configSet.put("whitelist", new ConfigMaker(path, "whitelist.yml"));
         configSet.put("chunkownership", new ConfigMaker(path, "chunkownership.yml"));
+        configSet.put("fishinglevel", new ConfigMaker(path, "fishinglevel.yml"));
+        configSet.put("fishingpoint", new ConfigMaker(path, "fishingpoint.yml"));
+        configSet.put("encyclopedia", new ConfigMaker(path, "encyclopedia.yml"));
+        configSet.put("encyclopediastack", new ConfigMaker(path, "encyclopediastack.yml"));
+        configSet.put("lastloc", new ConfigMaker(path, "lastloc.yml"));
+        configSet.put("playernum", new ConfigMaker(path, "playernum.yml"));
         loadSettings();
         saveConfigs();
     }
@@ -69,8 +75,20 @@ public class ConfigManager
     {
         FileConfiguration whitelistConfig = getConfig("whitelist");
         FileConfiguration chunkownershipConfig = getConfig("chunkownership");
+        FileConfiguration fishinglevelConfig = getConfig("fishinglevel");
+        FileConfiguration fishingpointConfig = getConfig("fishingpoint");
+        FileConfiguration encyclopediaConfig = getConfig("encyclopedia");
+        FileConfiguration encyclopediastackConfig = getConfig("encyclopediastack");
+        FileConfiguration lastLocConfig = getConfig("lastloc");
+        FileConfiguration playernumConfig = getConfig("playernum");
 
         whitelistConfig.options().copyDefaults(true);
         chunkownershipConfig.options().copyDefaults(true);
+        fishinglevelConfig.options().copyDefaults(true);
+        fishingpointConfig.options().copyDefaults(true);
+        encyclopediaConfig.options().copyDefaults(true);
+        encyclopediastackConfig.options().copyDefaults(true);
+        lastLocConfig.options().copyDefaults(true);
+        playernumConfig.options().copyDefaults(true);
     }
 }

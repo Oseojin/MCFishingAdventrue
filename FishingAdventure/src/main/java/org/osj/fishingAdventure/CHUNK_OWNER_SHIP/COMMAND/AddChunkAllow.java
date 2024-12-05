@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.osj.fishingAdventure.CHUNK_OWNER_SHIP.CHAT.MessageManager;
+import org.osj.fishingAdventure.MESSAGE.MessageManager;
 import org.osj.fishingAdventure.FishingAdventure;
 
 import java.util.UUID;

@@ -1,14 +1,17 @@
 package org.osj.fishingAdventure.CHUNK_OWNER_SHIP;
 
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.osj.fishingAdventure.CHUNK_OWNER_SHIP.CHAT.MessageManager;
+import org.osj.fishingAdventure.MESSAGE.MessageManager;
 import org.osj.fishingAdventure.FishingAdventure;
+import org.osj.fishingAdventure.WORLD.WorldManager;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -23,6 +26,7 @@ public class ChunkManager implements Listener
     FileConfiguration chunkConfig = FishingAdventure.getConfigManager().getConfig("chunkownership");
     private final HashMap<UUID, List<Long>> chunkMasterDataMap = new HashMap<>();
     private final HashMap<UUID, List<String>> chunkAllowedDataMap = new HashMap<>();
+    private static int defaultY = 151;
 
     public ChunkManager()
     {
@@ -48,17 +52,26 @@ public class ChunkManager implements Listener
         Player player = event.getPlayer();
         Chunk chunk = player.getChunk();
 
-        if(currentPlayerChunk.get(player) != null && currentPlayerChunk.get(player).equals(chunk))
+        if(!currentPlayerChunk.containsKey(player))
+        {
+            currentPlayerChunk.put(player, chunk);
+        }
+        if(currentPlayerChunk.get(player).equals(chunk))
         {
             return;
         }
-        currentPlayerChunk.put(player, chunk);
 
         if(!isOwnerless(chunk.getChunkKey()))
         {
+            if(whosChunk(chunk.getChunkKey()).equals(whosChunk(currentPlayerChunk.get(player).getChunkKey())))
+            {
+                currentPlayerChunk.put(player, chunk);
+                return;
+            }
             Player masterPlayer = FishingAdventure.getServerInstance().getServer().getPlayer(whosChunk(chunk.getChunkKey()));
-            MessageManager.SendTitle(player, masterPlayer.getName(), "", TextColor.color(0, 255, 0), TextColor.color(0, 0 ,0));
+            MessageManager.SendTitle(player, masterPlayer.getName(), TextColor.color(0, 255, 0), "의 섬", TextColor.color(255, 255 ,255));
         }
+        currentPlayerChunk.put(player, chunk);
     }
 
     public void addMyChunk(UUID uuid, Chunk chunk)
@@ -76,6 +89,22 @@ public class ChunkManager implements Listener
             {
                 chunkMasterDataMap.get(uuid).add(chunk.getChunkKey());
             }
+
+            int blockStartX = chunk.getX() * 16;
+            int blockStartZ = chunk.getZ() * 16;
+
+            int[] centerOffsets = {7, 8};
+
+            for(int offsetX : centerOffsets)
+            {
+                for(int offsetZ : centerOffsets)
+                {
+                    int blockX = blockStartX + offsetX;
+                    int blockZ = blockStartZ + offsetZ;
+                    Bukkit.getWorld(WorldManager.rest_world).getBlockAt(blockX, defaultY, blockZ).setType(Material.DIRT);
+                }
+            }
+
 
             chunkConfig.set("chunks.master." + uuid, chunkMasterDataMap.get(uuid));
             FishingAdventure.getConfigManager().saveConfig("chunkownership");
@@ -165,5 +194,25 @@ public class ChunkManager implements Listener
             }
         }
         return null;
+    }
+    public boolean canInteractChunk(Player player, Chunk chunk)
+    {
+        UUID uuid = player.getUniqueId();
+        if(player.getWorld().getName().equals(WorldManager.wild) || player.getWorld().getName().equals(WorldManager.nether) || player.getWorld().getName().equals(WorldManager.end))
+        {
+            return true;
+        }
+        if(player.getWorld().getName().equals(WorldManager.rest_world))
+        {
+            if(isMyChunk(uuid, chunk))
+            {
+                return true;
+            }
+            else if(isMyFriendChunk(whosChunk(chunk.getChunkKey()), uuid))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

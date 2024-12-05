@@ -19,3 +19,11 @@ commands:
   removeallowchunk:
     aliases: 청크불허
     description: 청크 상호작용 불허
+  encyclopedia:
+    aliases: 도감
+    description: 도감 열기
+  spawn:
+    aliases: 스폰
+    description: 현재 월드의 스폰 장소로 이동
+  test:
+    description: 테스트용
