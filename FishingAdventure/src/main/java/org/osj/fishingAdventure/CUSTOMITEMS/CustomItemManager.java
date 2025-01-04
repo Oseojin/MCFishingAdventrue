@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.osj.fishingAdventure.FISHING_SYSTEM.FishingManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +44,13 @@ public class CustomItemManager implements Listener
     CustomStack legend_key;
     CustomStack myth_key;
 
+    // 수족관
+    CustomStack ordinary_aquarium;
+    CustomStack delicate_aquarium;
+    CustomStack environmental_reproduction_aquarium;
+    CustomStack shock_absorption_aquarium;
+    CustomStack folklores_sealing_tool;
+    CustomStack mythical_sanctuary;
 
     // 잼스톤
     CustomStack normalGemStone;
@@ -164,6 +172,7 @@ public class CustomItemManager implements Listener
         icon_left_blue = CustomStack.getInstance("fishing_adventure:icon_left_blue");
         loadRods();
         loadKeys();
+        loadAquariums();
         LoadGemStones();
         LoadTickets();
         makeItemInFishList();
@@ -194,6 +203,16 @@ public class CustomItemManager implements Listener
         overload_key = CustomStack.getInstance("fishing_adventure:overload_key");
         legend_key = CustomStack.getInstance("fishing_adventure:legend_key");
         myth_key = CustomStack.getInstance("fishing_adventure:myth_key");
+    }
+
+    private void loadAquariums()
+    {
+        ordinary_aquarium = CustomStack.getInstance("fishing_adventure:ordinary_aquarium");
+        delicate_aquarium = CustomStack.getInstance("fishing_adventure:delicate_aquarium");
+        environmental_reproduction_aquarium = CustomStack.getInstance("fishing_adventure:environmental_reproduction_aquarium");
+        shock_absorption_aquarium = CustomStack.getInstance("fishing_adventure:shock_absorption_aquarium");
+        folklores_sealing_tool = CustomStack.getInstance("fishing_adventure:folklores_sealing_tool");
+        mythical_sanctuary = CustomStack.getInstance("fishing_adventure:mythical_sanctuary");
     }
 
     private void LoadGemStones()
@@ -332,10 +351,7 @@ public class CustomItemManager implements Listener
     private void makeItemInFishList()
     {
         itemInFishList60.add(durabilityHealGemStone);
-
-        itemInFishList25.add(wildTeleportTicket);
-
-        itemInFishList10.add(durabilityGemStone);
+        itemInFishList25.add(durabilityGemStone);
         itemInFishList10.add(chunkPurchaseTicket);
     }
 
@@ -382,7 +398,7 @@ public class CustomItemManager implements Listener
     {
         Random random = new Random();
         int randNum = random.nextInt(1, 101);
-        if(randNum < 30)
+        if(randNum < 60)
         {
             return switch (grade)
             {
@@ -394,19 +410,31 @@ public class CustomItemManager implements Listener
                 default -> mythGemStone;
             };
         }
-        if(randNum < 30 + 30)
+        if(randNum < 60 + 20)
         {
             return durabilityHealGemStone;
         }
-        else if(randNum < 30 + 30 + 25)
+        else if(randNum < 60 + 20 + 10)
         {
-            return itemInFishList25.get(random.nextInt(itemInFishList25.size()));
+            return switch (grade)
+            {
+                case 1 -> ordinary_aquarium;
+                case 2 -> delicate_aquarium;
+                case 3 -> environmental_reproduction_aquarium;
+                case 4 -> shock_absorption_aquarium;
+                case 5 -> folklores_sealing_tool;
+                default -> mythical_sanctuary;
+            };
         }
-        else if(randNum < 30 + 30 + 25 + 10)
+        else if(randNum < 60 + 20 + 10 + 5)
         {
-            return itemInFishList10.get(random.nextInt(itemInFishList10.size()));
+            return durabilityGemStone;
         }
-        else if(randNum < 30 + 30 + 25 + 10 + 4)
+        else if(randNum < 60 + 20 + 10 + 5 + 4)
+        {
+            return chunkPurchaseTicket;
+        }
+        else
         {
             return switch (grade)
             {
@@ -418,10 +446,6 @@ public class CustomItemManager implements Listener
                 default -> normal_key;
             };
         }
-        else
-        {
-            return inviteTicket;
-        }
     }
 
     public int getFishListSize()
@@ -430,6 +454,51 @@ public class CustomItemManager implements Listener
     }
 
     public int getFishNum(CustomStack fish)
+    {
+        List<CustomStack> fishList;
+        int count = 0;
+        switch (FishingManager.getFishGrade(fish.getPermission()))
+        {
+            case 1:
+                fishList = getNormalFishList();
+                count = 1;
+                break;
+            case 2:
+                fishList = getRareFishList();
+                count = 35;
+                break;
+            case 3:
+                fishList = getAncientFishList();
+                count = 55;
+                break;
+            case 4:
+                fishList = getOverlordFishList();
+                count = 65;
+                break;
+            case 5:
+                fishList = getLegendFishList();
+                count = 72;
+                break;
+            case 6:
+                fishList = getMythFishList();
+                count = 77;
+                break;
+            default:
+                fishList = getUniqueFishList();
+                break;
+        }
+        for(int i = fishList.size() - 1; i >= 0; i--)
+        {
+            if(fishList.get(i).getDisplayName().equals(fish.getDisplayName()))
+            {
+                return count;
+            }
+            count++;
+        }
+        return -1;
+    }
+
+    public int getFishIndex(CustomStack fish)
     {
         List<CustomStack> allFish = getAllFishList();
         for(int i = 0; i < allFish.size(); i++)

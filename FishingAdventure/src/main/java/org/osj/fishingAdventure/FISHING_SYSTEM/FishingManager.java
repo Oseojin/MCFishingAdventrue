@@ -30,6 +30,7 @@ import org.osj.fishingAdventure.CUSTOMITEMS.LoreColorManager;
 import org.osj.fishingAdventure.DATA_MANAGEMENT.ConfigManager;
 import org.osj.fishingAdventure.FishingAdventure;
 import org.osj.fishingAdventure.MESSAGE.MessageManager;
+import org.osj.fishingAdventure.WORLD.EVENT.PlayerStructureMode;
 import org.osj.fishingAdventure.WORLD.WorldManager;
 
 import java.time.Duration;
@@ -102,6 +103,11 @@ public class FishingManager implements Listener
             fishingPointConfig.set("players." + uuid, playerFishingPointMap.get(uuid));
             FishingAdventure.getConfigManager().saveConfig("fishingpoint");
         }
+
+        Component listNameComponent = Component.empty()
+                .append(Component.text("[lv." + playerFishingLevelMap.get(uuid) + "]").color(TextColor.color(0, 223, 255)))
+                .append(Component.text(player.getName()));
+        player.playerListName(listNameComponent);
     }
 
     public void startMiniGame(Player player, CustomStack caughtFish, Integer stringLv, Integer fishDirChangeChance, Integer reelLevel, Integer fishStrength, PlayerFishEvent event)
@@ -294,7 +300,7 @@ public class FishingManager implements Listener
     {
         Location hookLoc = hook.getLocation();
         UUID uuid = player.getUniqueId();
-        int fishNum = FishingAdventure.getCustomItemManager().getFishNum(caughtFish);
+        int fishNum = FishingAdventure.getCustomItemManager().getFishNum(caughtFish) - 1;
         String stackPath = "players."+uuid+"."+fishNum;
         int stack = encyclopediastackConfig.getInt(stackPath);
         encyclopediastackConfig.set(stackPath, stack+1);
@@ -310,17 +316,16 @@ public class FishingManager implements Listener
             case 6 -> Color.fromRGB(255, 255, 85);
             default -> Color.WHITE;
         };
-        if(grade >= 4)
+        if(grade >= 5)
         {
             String gradeString = switch (grade)
             {
-                case 4 -> "[패왕종] ";
                 case 5 -> "[전설종] ";
                 case 6 -> "[신화종] ";
                 default -> "";
             };
             Component announceComponent = Component.empty()
-                    .append(Component.text(player.getName() + "님이 ").color(TextColor.color(0, 232, 255)))
+                    .append(Component.text(player.getName() + " 님이 ").color(TextColor.color(0, 232, 255)))
                     .append(Component.text(gradeString + caughtFish.getDisplayName())).color(TextColor.color(gradeColor.asRGB()))
                     .append(Component.text(" 을(를) 낚았습니다!").color(TextColor.color(0, 232, 255)));
             for(Player online : Bukkit.getOnlinePlayers())
@@ -334,9 +339,8 @@ public class FishingManager implements Listener
         onMiniGameMap.put(uuid, false);
         hook.teleport(new Location(player.getWorld(), 0, 1000, 0));
         player.getInventory().addItem(caughtFish.getItemStack());
-        onPlayerGetExp(player, fishStrength / 2 * getFishGrade(caughtFish.getPermission()));
-        onPlayerGetPoint(player, fishStrength / 2 * getFishGrade(caughtFish.getPermission()));
-        player.giveExp(fishStrength / 2 * getFishGrade(caughtFish.getPermission()));
+        onPlayerGetExp(player, fishStrength * getFishGrade(caughtFish.getPermission()));
+        player.giveExp(fishStrength * getFishGrade(caughtFish.getPermission()));
     }
 
     public void FailCatch(Player player, FishHook hook, String cause)
@@ -475,6 +479,11 @@ public class FishingManager implements Listener
         fishingLevelConfig.set("players.lv." + uuid, lv);
         fishingLevelConfig.set("players.exp." + uuid, currExp);
         FishingAdventure.getConfigManager().saveConfig("fishinglevel");
+
+        Component listNameComponent = Component.empty()
+                .append(Component.text("[lv." + playerFishingLevelMap.get(uuid) + "]").color(TextColor.color(0, 223, 255)))
+                .append(Component.text(player.getName()));
+        player.playerListName(listNameComponent);
     }
 
     public static boolean isFish(String permission)

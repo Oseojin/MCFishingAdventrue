@@ -2,12 +2,10 @@ package org.osj.fishingAdventure;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.osj.fishingAdventure.CHUNK_OWNER_SHIP.COMMAND.*;
-import org.osj.fishingAdventure.CHUNK_OWNER_SHIP.EVENT.PlayerInteractInChunk;
 import org.osj.fishingAdventure.CHUNK_OWNER_SHIP.EVENT.SpawnProtect;
 import org.osj.fishingAdventure.CUSTOMITEMS.CustomItemManager;
 import org.osj.fishingAdventure.CHUNK_OWNER_SHIP.ChunkManager;
 import org.osj.fishingAdventure.CHUNK_OWNER_SHIP.EVENT.UseChunkPurchaseTicket;
-import org.osj.fishingAdventure.CHUNK_OWNER_SHIP.EVENT.UseChunkRemoveTicket;
 import org.osj.fishingAdventure.DATA_MANAGEMENT.ConfigManager;
 import org.osj.fishingAdventure.ENCYCLOPEDIA_SYSTEM.COMMAND.OpenEncyclopedia;
 import org.osj.fishingAdventure.ENCYCLOPEDIA_SYSTEM.EVENT.EncyclopediaEvent;
@@ -15,13 +13,11 @@ import org.osj.fishingAdventure.ENCYCLOPEDIA_SYSTEM.EncyclopediaInventory;
 import org.osj.fishingAdventure.FISHING_SYSTEM.EVENT.*;
 import org.osj.fishingAdventure.FISHING_SYSTEM.FishingManager;
 import org.osj.fishingAdventure.FISHING_SYSTEM.RankingManager;
+import org.osj.fishingAdventure.MESSAGE.PlayerChat;
 import org.osj.fishingAdventure.MESSAGE.PlayerScoreboardManager;
 import org.osj.fishingAdventure.WORLD.COMMAND.SpawnCommand;
 import org.osj.fishingAdventure.WORLD.COMMAND.TestCommand;
-import org.osj.fishingAdventure.WORLD.EVENT.PortalTeleport;
-import org.osj.fishingAdventure.WORLD.EVENT.UseKey;
-import org.osj.fishingAdventure.WORLD.EVENT.WhiteList;
-import org.osj.fishingAdventure.WORLD.EVENT.WorldChangeExit;
+import org.osj.fishingAdventure.WORLD.EVENT.*;
 import org.osj.fishingAdventure.WORLD.WorldManager;
 
 public final class FishingAdventure extends JavaPlugin
@@ -61,14 +57,12 @@ public final class FishingAdventure extends JavaPlugin
         getServer().getPluginManager().registerEvents(chunkManager, serverInstance);
         getServer().getPluginManager().registerEvents(fishingManager, serverInstance);
         getServer().getPluginManager().registerEvents(new UseChunkPurchaseTicket(), serverInstance);
-        getServer().getPluginManager().registerEvents(new UseChunkRemoveTicket(), serverInstance);
         getServer().getPluginManager().registerEvents(new UseFishingRod(), serverInstance);
         getServer().getPluginManager().registerEvents(new UseFish(), serverInstance);
         getServer().getPluginManager().registerEvents(new PlayerScoreboardManager(), serverInstance);
-        getServer().getPluginManager().registerEvents(new PlayerInteractInChunk(), serverInstance);
         getServer().getPluginManager().registerEvents(new UseWildTicket(), serverInstance);
         getServer().getPluginManager().registerEvents(new UseInviteTicket(), serverInstance);
-        getServer().getPluginManager().registerEvents(new WhiteList(), serverInstance);
+        getServer().getPluginManager().registerEvents(new PlayerNum(), serverInstance);
         getServer().getPluginManager().registerEvents(new ItemCraft(), serverInstance);
         getServer().getPluginManager().registerEvents(new SpawnProtect(), serverInstance);
         getServer().getPluginManager().registerEvents(new EncyclopediaEvent(), serverInstance);
@@ -77,18 +71,20 @@ public final class FishingAdventure extends JavaPlugin
         getServer().getPluginManager().registerEvents(new UseKey(), serverInstance);
         getServer().getPluginManager().registerEvents(new WorldChangeExit(), serverInstance);
         getServer().getPluginManager().registerEvents(new PreventPVP(), serverInstance);
+        getServer().getPluginManager().registerEvents(new PlayerChat(), serverInstance);
     }
     private void registerCommand()
     {
         serverInstance.getServer().getPluginCommand("purchasechunkaccept").setExecutor(new AcceptChunkPurchase());
         serverInstance.getServer().getPluginCommand("purchasechunkreject").setExecutor(new RejectChunkPurchase());
-        serverInstance.getServer().getPluginCommand("removechunkaccept").setExecutor(new AcceptChunkRemove());
-        serverInstance.getServer().getPluginCommand("removechunkreject").setExecutor(new RejectChunkRemove());
         serverInstance.getServer().getPluginCommand("addallowchunk").setExecutor(new AddChunkAllow());
         serverInstance.getServer().getPluginCommand("removeallowchunk").setExecutor(new RemoveChunkAllow());
         serverInstance.getServer().getPluginCommand("encyclopedia").setExecutor(new OpenEncyclopedia());
         serverInstance.getServer().getPluginCommand("spawn").setExecutor(new SpawnCommand());
         serverInstance.getServer().getPluginCommand("test").setExecutor(new TestCommand());
+        serverInstance.getServer().getPluginCommand("tpland").setExecutor(new TeleportLandCommand());
+        serverInstance.getServer().getPluginCommand("removechunk").setExecutor(new RemoveChunkCommand());
+        serverInstance.getServer().getPluginCommand("structure").setExecutor(new PlayerStructureMode());
     }
 
     public static FishingAdventure getServerInstance()

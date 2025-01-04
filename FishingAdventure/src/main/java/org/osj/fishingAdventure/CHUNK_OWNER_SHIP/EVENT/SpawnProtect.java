@@ -7,10 +7,9 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockPistonEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.osj.fishingAdventure.CHUNK_OWNER_SHIP.ChunkManager;
 import org.osj.fishingAdventure.FishingAdventure;
 import org.osj.fishingAdventure.MESSAGE.MessageManager;
@@ -57,5 +56,66 @@ public class SpawnProtect implements Listener
             return;
         }
         event.setCancelled(true);
+    }
+    @EventHandler
+    public void onPreventInteraction(PlayerInteractEvent event)
+    {
+        Player player = event.getPlayer();
+        if(player.isOp())
+        {
+            return;
+        }
+        if(!player.getWorld().getName().equals(WorldManager.rest_world))
+        {
+            return;
+        }
+        if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_AIR))
+        {
+            return;
+        }
+        Block clickedBlock = event.getClickedBlock();
+        if(clickedBlock != null && FishingAdventure.getChunkManager().canInteractChunk(player, clickedBlock.getChunk()))
+        {
+            return;
+        }
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onBlockBurn(BlockBurnEvent event)
+    {
+        if(event.getBlock().getWorld().getName().equals(WorldManager.rest_world))
+        {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onFire(BlockIgniteEvent event)
+    {
+        if(event.getCause().equals(BlockIgniteEvent.IgniteCause.SPREAD))
+        {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerAttackFrame(HangingBreakByEntityEvent event)
+    {
+        if(!(event.getRemover() instanceof Player))
+        {
+            event.setCancelled(true);
+            return;
+        }
+        Player player = (Player) event.getRemover();
+        if(player.isOp())
+        {
+            return;
+        }
+        Chunk chunk = event.getEntity().getChunk();
+        if(!FishingAdventure.getChunkManager().canInteractChunk(player, chunk))
+        {
+            event.setCancelled(true);
+        }
     }
 }

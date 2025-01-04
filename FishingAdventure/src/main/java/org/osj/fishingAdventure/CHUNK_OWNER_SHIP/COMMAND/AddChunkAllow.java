@@ -26,9 +26,7 @@ public class AddChunkAllow implements CommandExecutor
         UUID friendUUID = player.getServer().getPlayerUniqueId(strings[0]);
         if(friendUUID == null)
         {
-            MessageManager.SendChatForm(player);
             MessageManager.SendChatContent(player, "존재하지 않는 플레이어 입니다.", TextColor.color(255, 0, 0));
-            MessageManager.SendChatForm(player);
             return false;
         }
 

@@ -1,9 +1,12 @@
 package org.osj.fishingAdventure.WORLD.EVENT;
 
+import dev.lone.itemsadder.api.CustomStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -41,14 +44,8 @@ public class WorldChangeExit implements Listener
                 player.teleport(WorldManager.restWorldSpawnLoc);
             }
         }.runTaskLater(FishingAdventure.getServerInstance(), 5L);
-        if(!player.hasPlayedBefore())
-        {
-            Chest manualChest = (Chest) Bukkit.getWorld(WorldManager.rest_world).getBlockState(0, 152, -13);
-            ItemStack manual = manualChest.getBlockInventory().getItem(0);
-            player.getInventory().addItem(FishingAdventure.getCustomItemManager().getRod(1).getItemStack());
-            player.getInventory().addItem(FishingAdventure.getCustomItemManager().getKeyList().get(0).getItemStack());
-            player.getInventory().addItem(manual);
-        }
+
+        player.sendMessage(ChatColor.AQUA + "설명서: https://url.kr/8zhqgi");
     }
 
     @EventHandler

@@ -53,16 +53,16 @@ public class EncyclopediaInventory implements Listener
             case 6 -> 76;
             default -> 0;
         };
-        for(int i = 0; i < customFishList.size(); i++)
+        for(int i = customFishList.size() - 1; i >= 0; i--)
         {
             String path = "players."+uuid+"."+(i+offset);
             if(encyclopediaConfig.getBoolean(path))
             {
-                CustomStack encyclopediaFish = CustomItemManager.makeCopy(customFishList.get(i));
+                CustomStack encyclopediaFish = CustomItemManager.makeCopy(customFishList.get(customFishList.size() - 1 - i));
                 List<Component> loreList = encyclopediaFish.getItemStack().lore();
                 loreList.add(Component.text("잡은 마리: " + encyclopediastackConfig.getInt(path)));
                 encyclopediaFish.getItemStack().lore(loreList);
-                inv.setItem(customFishList.size() - (i+1), encyclopediaFish.getItemStack());
+                inv.setItem(i, encyclopediaFish.getItemStack());
             }
             else
             {
@@ -129,12 +129,11 @@ public class EncyclopediaInventory implements Listener
                 {
                     return;
                 }
-                int index = FishingAdventure.getCustomItemManager().getFishNum(clickedCustom);
+                int index = FishingAdventure.getCustomItemManager().getFishNum(clickedCustom) - 1;
                 if(encyclopediaConfig.getBoolean("players."+uuid+"."+index))
                 {
                     return;
                 }
-                // 자신이 잡은 물고기인지 확인
                 String lastLore = ((TextComponent)clickedItem.lore().getLast()).content();
                 if(lastLore.equals("물고기가 무언가 물고 있습니다."))
                 {
@@ -145,7 +144,10 @@ public class EncyclopediaInventory implements Listener
                 FishingAdventure.getConfigManager().saveConfig("encyclopedia");
                 clickedItem.add(-1);
                 inv.close();
-                open(player, currentPage(inv));
+                int grade = FishingManager.getFishGrade(clickedCustom.getPermission());
+                FishingAdventure.getFishingManager().onPlayerGetPoint(player, 100 * grade);
+                player.sendMessage(Component.text("신규 물고기 등록!! 포인트 +" + 100 * grade).color(TextColor.color(0, 214, 255)));
+                open(player, grade);
             }
         }
     }

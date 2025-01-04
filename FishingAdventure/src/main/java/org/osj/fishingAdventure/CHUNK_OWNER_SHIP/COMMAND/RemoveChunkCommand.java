@@ -1,37 +1,28 @@
 package org.osj.fishingAdventure.CHUNK_OWNER_SHIP.COMMAND;
 
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.osj.fishingAdventure.MESSAGE.MessageManager;
 import org.osj.fishingAdventure.FishingAdventure;
 
-import java.util.UUID;
-
-public class RemoveChunkAllow implements CommandExecutor
+public class RemoveChunkCommand implements CommandExecutor
 {
-
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings)
     {
         Player player = (Player) commandSender;
-        if(strings.length != 1)
+        if(!player.isOp())
         {
             return false;
         }
-
-        UUID friendUUID = player.getServer().getPlayerUniqueId(strings[0]);
-        if(friendUUID == null)
+        if(FishingAdventure.getChunkManager().isOwnerless(player.getChunk().getChunkKey()))
         {
-            MessageManager.SendChatContent(player, "존재하지 않는 플레이어 입니다.", TextColor.color(255, 0, 0));
+            player.sendMessage("주인 없는 섬 입니다.");
             return false;
         }
-
-        FishingAdventure.getChunkManager().removeFriendChunk(friendUUID, player.getUniqueId());
-
+        FishingAdventure.getChunkManager().removeMyChunk(FishingAdventure.getChunkManager().whosChunk(player.getChunk().getChunkKey()), player.getChunk());
         return false;
     }
 }

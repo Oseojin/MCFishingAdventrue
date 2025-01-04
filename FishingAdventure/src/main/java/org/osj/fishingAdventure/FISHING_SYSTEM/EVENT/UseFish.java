@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.osj.fishingAdventure.CUSTOMITEMS.CustomItemManager;
 import org.osj.fishingAdventure.FISHING_SYSTEM.FishingManager;
 import org.osj.fishingAdventure.FishingAdventure;
 
@@ -27,9 +28,10 @@ public class UseFish implements Listener
         {
             if(FishingManager.isFish(fishCustom.getPermission()))
             {
+                int grade = FishingManager.getFishGrade(fishCustom.getPermission());
+                int fishNum = FishingAdventure.getCustomItemManager().getFishNum(fishCustom);
                 if(((TextComponent)fishCustom.getItemStack().getItemMeta().lore().getLast()).content().equals("물고기가 무언가 물고 있습니다."))
                 {
-                    int grade = FishingManager.getFishGrade(fishCustom.getPermission());
                     CustomStack gemstone = FishingAdventure.getCustomItemManager().getItemInFishList(grade);
                     player.getInventory().addItem(gemstone.getItemStack());
                     if(fishCustom.getItemStack().getAmount() >= 2)
@@ -51,6 +53,11 @@ public class UseFish implements Listener
                         fishMeta.lore(fishLoreList);
                         player.getInventory().getItemInMainHand().setItemMeta(fishMeta);
                     }
+                }
+                else
+                {
+                    FishingAdventure.getFishingManager().onPlayerGetPoint(player, fishNum * grade);
+                    player.getInventory().getItemInMainHand().add(-1);
                 }
             }
         }

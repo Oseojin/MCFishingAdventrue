@@ -4,6 +4,7 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,6 +53,10 @@ public class ChunkManager implements Listener
         Player player = event.getPlayer();
         Chunk chunk = player.getChunk();
 
+        if(!player.getWorld().getName().equals(WorldManager.rest_world))
+        {
+            return;
+        }
         if(!currentPlayerChunk.containsKey(player))
         {
             currentPlayerChunk.put(player, chunk);
@@ -69,9 +74,26 @@ public class ChunkManager implements Listener
                 return;
             }
             Player masterPlayer = FishingAdventure.getServerInstance().getServer().getPlayer(whosChunk(chunk.getChunkKey()));
-            MessageManager.SendTitle(player, masterPlayer.getName(), TextColor.color(0, 255, 0), "의 섬", TextColor.color(255, 255 ,255));
+            if(masterPlayer == null)
+            {
+                OfflinePlayer masterOfflinePlayer = FishingAdventure.getServerInstance().getServer().getOfflinePlayer(whosChunk(chunk.getChunkKey()));
+                MessageManager.SendTitle(player, masterOfflinePlayer.getName(), TextColor.color(0, 255, 0), "의 섬", TextColor.color(255, 255 ,255));
+            }
+            else
+            {
+                MessageManager.SendTitle(player, masterPlayer.getName(), TextColor.color(0, 255, 0), "의 섬", TextColor.color(255, 255 ,255));
+            }
         }
         currentPlayerChunk.put(player, chunk);
+    }
+
+    public Chunk getMyChunk(UUID uuid)
+    {
+        if(!chunkMasterDataMap.containsKey(uuid))
+        {
+            return null;
+        }
+        return Bukkit.getWorld(WorldManager.rest_world).getChunkAt(chunkMasterDataMap.get(uuid).get(0));
     }
 
     public void addMyChunk(UUID uuid, Chunk chunk)
@@ -129,9 +151,7 @@ public class ChunkManager implements Listener
         }
         else if(chunkAllowedDataMap.get(friend).contains(master.toString()))
         {
-            MessageManager.SendChatForm(player);
             MessageManager.SendChatContent(player, "이미 허용된 플레이어 입니다.", TextColor.color(255, 0, 0));
-            MessageManager.SendChatForm(player);
             return;
         }
         else
@@ -148,9 +168,7 @@ public class ChunkManager implements Listener
         Player player = FishingAdventure.getServerInstance().getServer().getPlayer(master);
         if(chunkAllowedDataMap.get(friend) == null || !chunkAllowedDataMap.get(friend).contains(master.toString()))
         {
-            MessageManager.SendChatForm(player);
             MessageManager.SendChatContent(player, "추가되어 있지 않은 플레이어입니다!", TextColor.color(255, 0, 0));
-            MessageManager.SendChatForm(player);
             return;
         }
 
@@ -208,7 +226,7 @@ public class ChunkManager implements Listener
             {
                 return true;
             }
-            else if(isMyFriendChunk(whosChunk(chunk.getChunkKey()), uuid))
+            else if(isMyFriendChunk(uuid, whosChunk(chunk.getChunkKey())))
             {
                 return true;
             }

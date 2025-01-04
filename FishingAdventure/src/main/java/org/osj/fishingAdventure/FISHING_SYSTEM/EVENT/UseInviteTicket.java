@@ -37,9 +37,7 @@ public class UseInviteTicket implements Listener
         }
         if (event.getAction().isRightClick() && ticket.getPermission().contains("inviteticket"))
         {
-            MessageManager.SendChatForm(player);
             MessageManager.SendChatContent(player, "초대할 플레이어 이름을 입력해 주십시요. \"취소\"라고 입력하면 취소됩니다.", TextColor.color(0, 226, 255));
-            MessageManager.SendChatForm(player);
             useInviteTicketList.add(player.getUniqueId());
         }
     }

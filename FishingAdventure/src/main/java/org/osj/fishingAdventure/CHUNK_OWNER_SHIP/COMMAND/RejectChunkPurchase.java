@@ -36,9 +36,7 @@ public class RejectChunkPurchase implements CommandExecutor
             return false;
         }
 
-        MessageManager.SendChatForm(player);
         MessageManager.SendChatContent(player, "청크 소유를 취소하였습니다!", TextColor.color(255, 0, 0));
-        MessageManager.SendChatForm(player);
 
         ChunkManager.purchaseWaitList.remove(player);
         return false;

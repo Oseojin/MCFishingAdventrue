@@ -33,25 +33,19 @@ public class UseChunkPurchaseTicket implements Listener
         {
             if(!player.getWorld().getName().equals(WorldManager.rest_world))
             {
-                MessageManager.SendChatForm(player);
                 MessageManager.SendChatContent(player, "초승달 섬에서만 청크를 소유할 수 있습니다!", TextColor.color(255, 0, 0));
-                MessageManager.SendChatForm(player);
 
                 return;
             }
             if(-3 <= player.getChunk().getX() && player.getChunk().getX() <= 3 && -3 <= player.getChunk().getZ() && player.getChunk().getZ() <= 3)
             {
-                MessageManager.SendChatForm(player);
                 MessageManager.SendChatContent(player, "초승달 섬 스폰에서 너무 가깝습니다!", TextColor.color(255, 0, 0));
-                MessageManager.SendChatForm(player);
                 
                 return;
             }
             if(!FishingAdventure.getChunkManager().isOwnerless(player.getChunk().getChunkKey()))
             {
-                MessageManager.SendChatForm(player);
                 MessageManager.SendChatContent(player, "이미 누군가가 소유중인 청크 입니다!", TextColor.color(255, 0, 0));
-                MessageManager.SendChatForm(player);
 
                 return;
             }

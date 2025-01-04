@@ -21,7 +21,7 @@ public class RankingManager
             @Override
             public void run()
             {
-                developerUUID = Bukkit.getPlayer("Happy_Kkyulmik").getUniqueId().toString();
+                developerUUID = Bukkit.getOfflinePlayer("MoonAroma04").getUniqueId().toString();
                 Set<String> uuidSet = FishingManager.fishingPointConfig.getKeys(true);
                 if(uuidSet.isEmpty())
                 {
@@ -32,21 +32,17 @@ public class RankingManager
                 while(stringIterator.hasNext())
                 {
                     String uuidString = stringIterator.next().replace("players.", "");
-                    if(uuidSet.equals(developerUUID))
-                    {
-                        continue;
-                    }
                     int point = FishingManager.fishingPointConfig.getInt("players." + uuidString);
+                    Bukkit.getConsoleSender().sendMessage(Bukkit.getOfflinePlayer(UUID.fromString(uuidString)).getName() + " " + point);
+                    if(uuidString.equals(developerUUID))
+                    {
+                        point = -1;
+                    }
                     rankingMap.put(UUID.fromString(uuidString), point);
                 }
                 List<UUID> keySet = new ArrayList<>(rankingMap.keySet());
                 keySet.sort((o1, o2) -> rankingMap.get(o2).compareTo(rankingMap.get(o1)));
-                Component announceComponent = Component.text("랭킹이 업데이트 되었습니다!").color(TextColor.color(0, 231, 255)).decorate(TextDecoration.BOLD);
-                for(Player player : Bukkit.getOnlinePlayers())
-                {
-                    player.sendMessage(announceComponent);
-                }
             }
-        }.runTaskTimer(FishingAdventure.getServerInstance(), 20L, 10L * 60L * 20L);
+        }.runTaskTimer(FishingAdventure.getServerInstance(), 20L, 20L * 5L);
     }
 }

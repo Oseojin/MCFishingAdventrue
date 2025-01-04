@@ -36,9 +36,7 @@ public class AcceptChunkPurchase implements CommandExecutor
             return false;
         }
 
-        MessageManager.SendChatForm(player);
         MessageManager.SendChatContent(player, "청크를 성공적으로 소유하였습니다!", TextColor.color(0, 255, 0));
-        MessageManager.SendChatForm(player);
 
         playerHand.add(-1);
         FishingAdventure.getChunkManager().addMyChunk(player.getUniqueId(), ChunkManager.purchaseWaitList.get(player));

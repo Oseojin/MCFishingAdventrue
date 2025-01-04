@@ -110,7 +110,7 @@ public class UseFishingRod implements Listener
             CustomStack caughtedFish = CustomItemManager.makeCopy(fishList.get(random.nextInt(fishList.size())));
             int fishStrength = FishingAdventure.getCustomItemManager().getFishNum(caughtedFish);
             int rootingChance = random.nextInt(100) + 1;
-            if(rootingChance <= 20)
+            if(rootingChance <= 25)
             {
                 addFishLore(caughtedFish, Component.text("물고기가 무언가 물고 있습니다.").color(TextColor.color(79, 97, 171)).decoration(TextDecoration.ITALIC, false));
             }

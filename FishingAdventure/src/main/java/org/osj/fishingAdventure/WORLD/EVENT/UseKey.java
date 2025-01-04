@@ -81,6 +81,10 @@ public class UseKey implements Listener
         if(lastLocConfig.getInt("players." + uuid) >= index)
         {
             player.teleport(teleportLoc);
+            if(player.getGameMode().equals(GameMode.CREATIVE))
+            {
+                PlayerStructureMode.ChangeFishingMode(player);
+            }
             return;
         }
 
@@ -98,6 +102,10 @@ public class UseKey implements Listener
             FishingAdventure.getConfigManager().saveConfig("lastloc");
             player.teleport(teleportLoc);
             handItem.add(-1);
+            if(player.getGameMode().equals(GameMode.CREATIVE))
+            {
+                PlayerStructureMode.ChangeFishingMode(player);
+            }
         }
         else
         {
